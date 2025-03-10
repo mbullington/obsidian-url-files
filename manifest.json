@@ -1,0 +1,10 @@
+{
+  "id": "obsidian-url-files",
+  "name": "Obsidian support for .url files",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Shows .url files, opens them in your browser when clicked.",
+  "author": "Michael Bullington",
+  "authorUrl": "https://mbullington.net",
+  "isDesktopOnly": false
+}
