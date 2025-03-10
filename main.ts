@@ -1,4 +1,4 @@
-import { App, Plugin, TFile, PluginSettingTab, Setting } from "obsidian";
+import { Plugin, TFile, WorkspaceLeaf, ItemView, FileView } from "obsidian";
 
 export default class URLFilesPlugin extends Plugin {
   async onload() {
@@ -6,39 +6,39 @@ export default class URLFilesPlugin extends Plugin {
 
     // Register the URL file extension with Obsidian
     this.registerExtensions(["url"], "url");
-
-    // Handle clicks on .url files
-    this.registerEvent(
-      this.app.workspace.on("file-open", async (_file: TFile) => {
-        const leaf = this.app.workspace.getLeavesOfType("url").first();
-
-        const file = leaf?.getViewState().state?.file as string | undefined;
-        if (!file) {
-          return;
-        }
-
-        const successful = await this.handleURLFile(file);
-      })
-    );
+    this.registerView("url", (leaf) => new URLFilesView(leaf));
   }
 
   onunload() {
     console.log("Unloading URL Files Plugin");
   }
+}
 
-  async handleURLFile(file: string) {
+export class URLFilesView extends FileView {
+  constructor(leaf: WorkspaceLeaf) {
+    super(leaf);
+  }
+
+  getViewType() {
+    return "url";
+  }
+
+  getDisplayText() {
+    return "Opened URL in browser.";
+  }
+
+  async onOpen() {
+    const container = this.containerEl.children[1];
+    container.empty();
+  }
+
+  async onLoadFile(file: TFile): Promise<void> {
     try {
       // Read the .url file content
-      const url = await this.app.vault.read(
-        this.app.vault.getFileByPath(file)!
-      );
-      console.log(url);
+      const url = await this.app.vault.read(file);
       window.open(url, "_blank");
-
-      return true;
     } catch (error) {
       console.error("Error handling URL file:", error);
-      return false;
     }
   }
 }
