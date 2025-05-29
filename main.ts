@@ -24,7 +24,7 @@ export class URLFilesView extends FileView {
   }
 
   getDisplayText() {
-    return "Opened URL in browser.";
+    return "Opened URL";
   }
 
   async onOpen() {
